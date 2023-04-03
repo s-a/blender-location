@@ -1,4 +1,3 @@
-import fs from 'fs'
 import assert from 'assert'
 import BlenderLocation from '../index.js'
 import semver from 'semver'
