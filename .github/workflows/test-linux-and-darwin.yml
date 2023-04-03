@@ -1,4 +1,4 @@
-name: Blender and Node.js
+name: Test Blender location using Node.js
 
 on:
   push:
