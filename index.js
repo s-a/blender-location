@@ -94,9 +94,15 @@ BlenderLocation.prototype.getBlenderExecutablePath = function() {
 		break
 	case 'macOS':
 		result = '/Applications/Blender/blender.app/Contents/MacOS/blender'
+		if (!fs.existsSync(result)) {
+			result = spawnSync('which', ['blender'])
+		}
 		break
 	case 'linux':
 		result = '/usr/share/blender'
+		if (!fs.existsSync(result)) {
+			result = spawnSync('which', ['blender'])
+		}
 		break
 	default:
 		throw new Error(`Unsupported platform: ${platform}`)
