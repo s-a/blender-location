@@ -4,6 +4,9 @@
   "description": "Returns the location of Blender executable on filesystem",
   "main": "index.js",
   "type": "module",
+  "files": [
+    "index.js"
+  ],
   "scripts": {
     "test": "node ./node_modules/mocha/bin/mocha.js"
   },
