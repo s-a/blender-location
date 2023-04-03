@@ -50,7 +50,7 @@ BlenderLocation.prototype.getBlenderExecutablePath = async function() {
 		}
 		break
 	case 'macOS':
-		result = '/Applications/Blender/blender.app/Contents/MacOS/blender'
+		result = '/Applications/Blender.app/Contents/MacOS/Blender'
 		break
 	case 'linux':
 		result = '/usr/bin/blender'
@@ -71,7 +71,7 @@ BlenderLocation.prototype.getBlenderExecutablePath = async function() {
 		throw new Error(`Unsupported platform: ${platform}`)
 	}
 
-	if (platform !== 'macOS' && (!result || !fs.existsSync(result))) {
+	if ((!result || !fs.existsSync(result))) {
 		throw new Error(`Blender executable "${result || 'null'}" path could not be determined`)
 	}
 
