@@ -35,8 +35,8 @@ jobs:
         else
           curl -L "https://ftp.halifax.rwth-aachen.de/blender/release/Blender3.5/blender-3.5.0-linux-x64.tar.xz" -o blender.tar.xz
           tar xf blender.tar.xz
-          mkdir -p ~/software/blender
-          mv blender-* ~/software/blender
+          sudo mkdir -p /usr/share/blender
+          sudo mv blender-* /usr/share/blender/
         fi
 
     - name: Test
