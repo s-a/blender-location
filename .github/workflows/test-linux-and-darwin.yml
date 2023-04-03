@@ -3,7 +3,7 @@ name: Test Blender location using Node.js
 on:
   push:
     branches:
-      - main
+      - master
 
 jobs:
   build:
