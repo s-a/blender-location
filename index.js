@@ -2,12 +2,13 @@
 * Docs:
 * https://docs.blender.org/manual/en/latest/advanced/blender_directory_layout.html
 */
-const os = require('os')
-const fs = require('fs')
-const path = require('path')
-const { spawnSync } = require('child_process')
-const reg = require('native-reg')
-const semver = require('semver')
+import {execa} from 'execa'
+
+import os from 'os'
+import fs from 'fs'
+import path from 'path'
+import reg from 'native-reg'
+import semver from 'semver'
 
 function BlenderLocation() {
 	return this
@@ -121,16 +122,20 @@ BlenderLocation.prototype.getBlenderExecutablePath = function() {
 	return result
 }
 
-BlenderLocation.prototype.version = function(exe) {
-	const exeVersion = spawnSync(exe, ['--version'])
-	const versionString = exeVersion.stdout.toString().trim().split('\n')[0].replace('Blender ', '')
+BlenderLocation.prototype.version = async function(exe) {
+	// const exeVersion = spawnSync(exe, '-v')
+	const exeVersion = await execa(exe, ['-v'])
+	console.log('exeVersion.stdout.toString()')
+	console.log(exeVersion)
+	const versionString = exeVersion.stdout.split('\n')[0].replace('Blender ', '')
 	const result = semver.parse(semver.clean(versionString))
 	return result
 }
 
-BlenderLocation.prototype.find = function() {
+BlenderLocation.prototype.find = async function() {
 	const exe = this.getBlenderExecutablePath()
-	const version = this.version(exe)
+
+	const version = await this.version(exe)
 	const locations = this.locations()
 	const resolvedLocations = this.resolveLocations(locations, `${version.major}.${version.minor}`)
 	const result = {
@@ -142,4 +147,4 @@ BlenderLocation.prototype.find = function() {
 	return result
 }
 
-module.exports = BlenderLocation
+export default BlenderLocation
