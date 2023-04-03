@@ -32,14 +32,13 @@ jobs:
           hdiutil attach blender.dmg
           cp -R /Volumes/Blender/Blender.app /Applications/
           hdiutil detach /Volumes/Blender/
-        elif [ "${{ matrix.os }}" = "windows-latest" ]; then
+        if [[ "${{ matrix.os }}" == "windows-latest" ]]; then
           curl -L "https://ftp.halifax.rwth-aachen.de/blender/release/Blender3.5/blender-3.5.0-windows-x64.msi" -o blender.msi
           msiexec /i blender.msi /quiet
-        else
+        if [[ "${{ matrix.os }}" == "linux-latest" ]]; then
           curl -L "https://ftp.halifax.rwth-aachen.de/blender/release/Blender3.5/blender-3.5.0-linux-x64.tar.xz" -o blender.tar.xz
           tar xf blender.tar.xz
           sudo mv blender-* /opt/blender
-        fi
 
     - name: Test
       run: npm test
