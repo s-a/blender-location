@@ -38,5 +38,8 @@ jobs:
           sudo mv blender-* /opt/blender
         fi
 
+    - name: Verify Blender installation path
+      run: which blender
+
     - name: Test
       run: npm test
