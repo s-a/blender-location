@@ -101,7 +101,13 @@ BlenderLocation.prototype.getBlenderExecutablePath = function() {
 	case 'linux':
 		result = '/usr/share/blender'
 		if (!fs.existsSync(result)) {
-			result = spawnSync('which', ['blender']).stdout.toString().trim()
+			result = path.join(process.env.HOME, 'software', 'blender', 'blender')
+			if (!fs.existsSync(result)) {
+				result = '/usr/local/bin/blender'
+				if (!fs.existsSync(result)) {
+					result = spawnSync('which', ['blender']).stdout.toString().trim()
+				}
+			}
 		}
 		break
 	default:
