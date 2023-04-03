@@ -71,7 +71,7 @@ BlenderLocation.prototype.getBlenderExecutablePath = async function() {
 		throw new Error(`Unsupported platform: ${platform}`)
 	}
 
-	if (!result || !fs.existsSync(result)) {
+	if (platform !== 'macOS' && (!result || !fs.existsSync(result))) {
 		throw new Error(`Blender executable "${result || 'null'}" path could not be determined`)
 	}
 
