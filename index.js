@@ -75,7 +75,7 @@ BlenderLocation.prototype.resolveLocations = (locations, version) => {
 	return resolvedLocations
 }
 
-BlenderLocation.prototype.getBlenderExecutablePath = function() {
+BlenderLocation.prototype.getBlenderExecutablePath = async function() {
 	let result
 	const platform = this.platform()
 	switch (platform) {
@@ -96,7 +96,7 @@ BlenderLocation.prototype.getBlenderExecutablePath = function() {
 	case 'macOS':
 		result = '/Applications/Blender/blender.app/Contents/MacOS/blender'
 		if (!fs.existsSync(result)) {
-			result = spawnSync('which', ['blender']).stdout.toString().trim()
+			result = (await execa('which', ['blender'])).stdout.toString().trim()
 		}
 		break
 	case 'linux':
@@ -106,7 +106,7 @@ BlenderLocation.prototype.getBlenderExecutablePath = function() {
 			if (!fs.existsSync(result)) {
 				result = '/usr/local/bin/blender'
 				if (!fs.existsSync(result)) {
-					result = spawnSync('which', ['blender']).stdout.toString().trim()
+					result = (await execa('which', ['blender'])).stdout.toString().trim()
 				}
 			}
 		}
@@ -133,7 +133,7 @@ BlenderLocation.prototype.version = async function(exe) {
 }
 
 BlenderLocation.prototype.find = async function() {
-	const exe = this.getBlenderExecutablePath()
+	const exe = await this.getBlenderExecutablePath()
 
 	const version = await this.version(exe)
 	const locations = this.locations()
