@@ -1,0 +1,1 @@
+[![Blender and Node.js](https://github.com/s-a/blender-location/actions/workflows/test-linux-and-darwin.yml/badge.svg)](https://github.com/s-a/blender-location/actions/workflows/test-linux-and-darwin.yml)
