@@ -33,6 +33,7 @@ jobs:
           cp -R /Volumes/Blender/Blender.app /Applications/
           hdiutil detach /Volumes/Blender/
         else
+          curl -L "https://ftp.halifax.rwth-aachen.de/blender/release/Blender3.5/blender-3.5.0-linux-x64.tar.xz" -o blender.tar.xz
           tar xf blender.tar.xz
           mkdir -p ~/software/blender
           mv blender-* ~/software/blender
