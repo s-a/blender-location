@@ -4,7 +4,6 @@
 */
 import {execa} from 'execa'
 
-import os from 'os'
 import fs from 'fs'
 import path from 'path'
 import reg from 'native-reg'
@@ -26,53 +25,10 @@ BlenderLocation.prototype.platform = function() {
 	return result
 }
 
-BlenderLocation.prototype.locations = function() {
-	const locations = {
-		win32: {
-			user: '%USERPROFILE%\\AppData\\Roaming\\Blender Foundation\\Blender',
-			system: '%USERPROFILE%\\AppData\\Roaming\\Blender Foundation\\Blender'
-		},
-		macOS: {
-			user: '/Users/$USER/Library/Application Support/Blender/',
-			system: '/Library/Application Support/Blender/'
-		},
-		linux: {
-			user: '$HOME/.config/blender/',
-			system: '/usr/share/blender/'
-		}
-	}
-	let result = null
-	if (process.platform === 'win32') {
-		result = locations.win32
-	}
-	if (process.platform === 'darwin') {
-		result = locations.darwin
-	}
-
-	return result || locations.linux
-}
-
-BlenderLocation.prototype.resolveLocations = (locations, version) => {
-	const resolvedLocations = {}
-
-	Object.keys(locations).forEach((key) => {
-		const value = locations[key]
-
-		// Replace $USER with the actual username
-		const resolvedValue = value.replace('$USER', process.env.USER)
-
-		// Replace $HOME with the actual home directory on Linux
-		const resolvedValueWithHome = resolvedValue.replace('$HOME', os.homedir())
-
-		// Replace %USERPROFILE% with the actual user profile directory on Windows
-		const userProfile = process.env.USERPROFILE || process.env.HOME
-		const resolvedValueWithUserProfile = resolvedValueWithHome.replace('%USERPROFILE%', userProfile)
-
-		// Resolve the path to its absolute path
-		resolvedLocations[key] = path.join(path.resolve(resolvedValueWithUserProfile), version)
-	})
-
-	return resolvedLocations
+BlenderLocation.prototype.extractVersionNumber = function (str) {
+	const regex = /[0-9]\.[0-9]\.[0-9]/g
+	const match = str.match(regex)
+	return match ? match[0] : null
 }
 
 BlenderLocation.prototype.getBlenderExecutablePath = async function() {
@@ -100,13 +56,16 @@ BlenderLocation.prototype.getBlenderExecutablePath = async function() {
 		}
 		break
 	case 'linux':
-		result = '/usr/share/blender'
+		result = '/usr/bin/blender'
 		if (!fs.existsSync(result)) {
-			result = path.join(process.env.HOME, 'software', 'blender', 'blender')
+			result = '/usr/local/bin/blender'
 			if (!fs.existsSync(result)) {
-				result = '/usr/local/bin/blender'
+				result = path.join(process.env.HOME, 'software', 'blender', 'blender')
 				if (!fs.existsSync(result)) {
-					result = (await execa('which', ['blender'])).stdout.toString().trim()
+					result = '/usr/share/blender'
+					if (!fs.existsSync(result)) {
+						result = (await execa('which', ['blender'])).stdout.toString().trim()
+					}
 				}
 			}
 		}
@@ -125,22 +84,16 @@ BlenderLocation.prototype.getBlenderExecutablePath = async function() {
 BlenderLocation.prototype.version = async function(exe) {
 	// const exeVersion = spawnSync(exe, '-v')
 	const exeVersion = await execa(exe, ['-v'])
-	console.log('exeVersion.stdout.toString()')
-	console.log(exeVersion)
-	const versionString = exeVersion.stdout.split('\n')[0].replace('Blender ', '')
-	const result = semver.parse(semver.clean(versionString))
+	const v = this.extractVersionNumber(exeVersion.stdout)
+	const result = semver.parse(semver.clean(v))
 	return result
 }
 
 BlenderLocation.prototype.find = async function() {
 	const exe = await this.getBlenderExecutablePath()
-
 	const version = await this.version(exe)
-	const locations = this.locations()
-	const resolvedLocations = this.resolveLocations(locations, `${version.major}.${version.minor}`)
 	const result = {
 		exe,
-		path: resolvedLocations,
 		version
 	}
 
