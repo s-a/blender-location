@@ -95,13 +95,13 @@ BlenderLocation.prototype.getBlenderExecutablePath = function() {
 	case 'macOS':
 		result = '/Applications/Blender/blender.app/Contents/MacOS/blender'
 		if (!fs.existsSync(result)) {
-			result = spawnSync('which', ['blender']).stdout.toString().trim().split('\n')[0]
+			result = spawnSync('which', ['blender']).stdout.toString().trim()
 		}
 		break
 	case 'linux':
 		result = '/usr/share/blender'
 		if (!fs.existsSync(result)) {
-			result = spawnSync('which', ['blender']).stdout.toString().trim().split('\n')[0]
+			result = spawnSync('which', ['blender']).stdout.toString().trim()
 		}
 		break
 	default:
