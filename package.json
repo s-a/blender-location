@@ -1,0 +1,37 @@
+{
+  "name": "blender-location",
+  "version": "1.0.0",
+  "description": "Returns the location of Blender executable on filesystem",
+  "main": "index.js",
+  "scripts": {
+    "test": "node ./node_modules/mocha/bin/mocha.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/s-a/blender-location.git"
+  },
+  "keywords": [
+    "blender",
+    "path",
+    "location",
+    "filesystem"
+  ],
+  "author": "s-a",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/s-a/blender-location/issues"
+  },
+  "homepage": "https://github.com/s-a/blender-location#readme",
+  "devDependencies": {
+    "eslint": "^6.8.0",
+    "eslint-plugin-import": "^2.20.2",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-standard": "^4.0.1"
+  },
+  "dependencies": {
+    "mocha": "^10.2.0",
+    "native-reg": "^1.1.1",
+    "semver": "^7.3.8"
+  }
+}

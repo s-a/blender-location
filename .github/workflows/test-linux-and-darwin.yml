@@ -1,0 +1,40 @@
+name: Blender and Node.js
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [macos-latest, ubuntu-latest, windows-latest]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install Blender
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x' # Blender requires Python 3.x
+        run: |
+          curl -L https://download.blender.org/release/Blender$(curl -s https://www.blender.org/download/ | grep -oP 'href=".*blender-.*-linux64.tar.xz"' | grep -oP 'blender-\d.*-linux64.tar.xz' | head -1) -o blender.tar.xz
+          tar xvf blender.tar.xz
+          export PATH="$PWD/$(ls | grep blender)/:$PATH"
+          blender --version
+
+      - name: Install Node.js and run npm i
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16.x'
+        run: |
+          node --version
+          npm --version
+          npm i
+
+      - name: Run npm test
+        run: |
+          npm test
