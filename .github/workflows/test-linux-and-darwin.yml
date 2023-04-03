@@ -28,15 +28,15 @@ jobs:
     - name: Download and install Blender
       run: |
         if [ "${{ matrix.os }}" = "macos-latest" ]; then
-          curl -L "https://www.blender.org/download/release/Blender3.5/blender-3.5.0-macos-x64.dmg" -o blender.dmg
+          curl -L "https://ftp.halifax.rwth-aachen.de/blender/release/Blender3.5/blender-3.5.0-macos-x64.dmg" -o blender.dmg
           hdiutil attach blender.dmg
           cp -R /Volumes/Blender/Blender.app /Applications/
           hdiutil detach /Volumes/Blender/
         elif [ "${{ matrix.os }}" = "windows-latest" ]; then
-          curl -L "https://www.blender.org/download/release/Blender3.5/blender-3.5.0-windows-x64.msi" -o blender.msi
+          curl -L "https://ftp.halifax.rwth-aachen.de/blender/release/Blender3.5/blender-3.5.0-windows-x64.msi" -o blender.msi
           msiexec /i blender.msi /quiet
         else
-          curl -L "https://www.blender.org/download/release/Blender3.5/blender-3.5.0-linux-x64.tar.xz" -o blender.tar.xz
+          curl -L "https://ftp.halifax.rwth-aachen.de/blender/release/Blender3.5/blender-3.5.0-linux-x64.tar.xz" -o blender.tar.xz
           tar xf blender.tar.xz
           sudo mv blender-* /opt/blender
         fi
