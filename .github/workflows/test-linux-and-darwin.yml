@@ -10,28 +10,36 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [macos-latest, ubuntu-latest, windows-latest]
+        os: [macos-latest, windows-latest, ubuntu-latest]
+        blender-version: [3.5.0]
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+    - name: Checkout code
+      uses: actions/checkout@v2
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v2.5.3
+      with:
+        node-version: '18.x'
+      
+    - name: Install dependencies
+      run: npm i
 
-      - name: Install Blender
-        run: |
-          curl -L https://download.blender.org/release/Blender$(curl -s https://www.blender.org/download/ | grep -oP 'href=".*blender-.*-linux64.tar.xz"' | grep -oP 'blender-\d.*-linux64.tar.xz' | head -1) -o blender.tar.xz
-          tar xvf blender.tar.xz
-          export PATH="$PWD/$(ls | grep blender)/:$PATH"
-          blender --version
+    - name: Download and install Blender
+      run: |
+        if [ "${{ matrix.os }}" = "macos-latest" ]; then
+          curl -L "https://www.blender.org/download/release/Blender${{ matrix.blender-version }}/blender-${{ matrix.blender-version }}-macos-x64.dmg" -o blender.dmg
+          hdiutil attach blender.dmg
+          cp -R /Volumes/Blender/Blender.app /Applications/
+          hdiutil detach /Volumes/Blender/
+        elif [ "${{ matrix.os }}" = "windows-latest" ]; then
+          curl -L "https://www.blender.org/download/release/Blender${{ matrix.blender-version }}/blender-${{ matrix.blender-version }}-windows-x64.msi" -o blender.msi
+          msiexec /i blender.msi /quiet
+        else
+          curl -L "https://www.blender.org/download/release/Blender${{ matrix.blender-version }}/blender-${{ matrix.blender-version }}-linux-x64.tar.xz" -o blender.tar.xz
+          tar xf blender.tar.xz
+          sudo mv blender-* /opt/blender
+        fi
 
-      - name: Install Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: '18.x'
-
-      - name: Install dependencies
-        run: |
-          npm i
-
-      - name: Run tests
-        run: |
-          npm test
+    - name: Test
+      run: npm test
