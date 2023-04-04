@@ -1,6 +1,6 @@
 {
   "name": "blender-location",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Returns the location of Blender executable on filesystem",
   "main": "index.js",
   "type": "module",
@@ -36,7 +36,7 @@
   "dependencies": {
     "execa": "^7.1.1",
     "mocha": "^10.2.0",
-    "native-reg": "^1.1.1",
-    "semver": "^7.3.8"
+    "semver": "^7.3.8",
+    "winreg": "^1.2.4"
   }
 }

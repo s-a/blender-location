@@ -6,8 +6,8 @@ import {execa} from 'execa'
 
 import fs from 'fs'
 import path from 'path'
-import reg from 'native-reg'
 import semver from 'semver'
+import Registry from 'winreg'
 
 function BlenderLocation() {
 	return this
@@ -31,19 +31,29 @@ BlenderLocation.prototype.extractVersionNumber = function (str) {
 	return match ? match[0] : null
 }
 
+BlenderLocation.prototype.getRegistryValue = async function() {
+	return new Promise(function(resolve, reject) {
+		const regKey = new Registry({
+			hive: Registry.HKLM,
+			key: '\\SOFTWARE\\Classes\\blendfile\\shell\\open\\command'
+		})
+
+		regKey.values(function (err, items /* array of RegistryItem */) {
+			if (err) { reject(err) } else {
+				const result = items[0].value
+				resolve(result)
+			}
+		})
+	})
+}
+
 BlenderLocation.prototype.getBlenderExecutablePath = async function() {
 	let result
 	const platform = this.platform()
 	switch (platform) {
 	case 'win32':
 		try {
-			const key = reg.openKey(
-				reg.HKLM,
-				'SOFTWARE\\Classes\\blendfile\\shell\\open',
-				reg.Access.READ)
-
-			result = reg.getValue(key, 'command', null)
-			reg.closeKey()
+			result = await this.getRegistryValue()
 			result = (result || '').replace('"%1"', '').replace(/"/g, '').trim().replace('\\blender-launcher.exe', '\\blender.exe')
 		} catch (error) {
 			throw new Error('Blender is not installed or registry key not found')
